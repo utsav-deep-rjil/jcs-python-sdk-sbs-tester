@@ -51,26 +51,27 @@ class JCSComputeVarArgsTest(unittest.TestCase):
          
         #****************create volume with snapshot_id, size and encryption *******************
          
-         
-        request = CreateVolumeRequest()
-        request.size = 20
-        request.encrypted = True
-        request.snapshot_id = snapshot_id
-         
-        response = basic_test.create_volume_test(self, request)
-        self.assertEqual(request.size, response.volume.size, "Create volume varargs test 2: volume size")
-        self.assertEqual(request.encrypted, response.volume.encrypted, "Create volume varargs test 2: encryption")
-        self.assertEqual(request.snapshot_id, response.volume.snapshot_id, "Create volume varargs test 2: snapshot ID")
-         
-        request.volume_type = "standard"
-        request.encrypted = False
-         
-        response = basic_test.create_volume_test(self, request)
-        self.assertEqual(request.size, response.volume.size, "Create volume varargs test 3: volume size")
-        # The source snapshot was encrypted so even if request.encrypted is False, created volume will be encrypted:
-        self.assertEqual(True, response.volume.encrypted, "Create volume varargs test 3: encryption")
-        self.assertEqual(request.snapshot_id, response.volume.snapshot_id, "Create volume varargs test 3: snapshot ID")
-        self.assertEqual(request.volume_type, response.volume.volume_type, "Create volume varargs test 3: volume type")
+        
+        if utils.get_snapshot_status(snapshot_id) == "completed":
+            request = CreateVolumeRequest()
+            request.size = 20
+            request.encrypted = True
+            request.snapshot_id = snapshot_id
+             
+            response = basic_test.create_volume_test(self, request)
+            self.assertEqual(request.size, response.volume.size, "Create volume varargs test 2: volume size")
+            self.assertEqual(request.encrypted, response.volume.encrypted, "Create volume varargs test 2: encryption")
+            self.assertEqual(request.snapshot_id, response.volume.snapshot_id, "Create volume varargs test 2: snapshot ID")
+             
+            request.volume_type = "standard"
+            request.encrypted = False
+             
+            response = basic_test.create_volume_test(self, request)
+            self.assertEqual(request.size, response.volume.size, "Create volume varargs test 3: volume size")
+            # The source snapshot was encrypted so even if request.encrypted is False, created volume will be encrypted:
+            self.assertEqual(True, response.volume.encrypted, "Create volume varargs test 3: encryption")
+            self.assertEqual(request.snapshot_id, response.volume.snapshot_id, "Create volume varargs test 3: snapshot ID")
+            self.assertEqual(request.volume_type, response.volume.volume_type, "Create volume varargs test 3: volume type")
          
          
         #***************** describe volumes *******************
